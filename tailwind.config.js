@@ -12,15 +12,15 @@ module.exports = {
       periwinkle20: "#C8D5EF",
       periwinkle10: "#CBC9D9",
       "fire-opal": "#D85050",
+      "ghost-white": "#F0F3F9",
       white: "#FFFFFF",
       "old-lace": "#FFF4E3",
       crayola: "#CC00FF",
       xanthic: "#3300FF",
     },
-    extend: {
-      boxShadow: {
-        notifications: "0px 4px 24px 0px rgba(156, 130, 38, 0.4)",
-      },
+    boxShadow: {
+      md: "0px 4px 24px 0px rgba(156, 130, 38, 0.4)",
+      lg: "0px 4px 42px 0px rgba(79, 114, 205, 0.15)",
     },
   },
   plugins: [],
