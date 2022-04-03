@@ -1,5 +1,5 @@
 import React from "react";
-import ExercismLogo from "../assets/logo.svg";
+import ExercismLogo from "../assets/exercism-logo.svg";
 import DashboardBg from "../assets/icons/dashboard-bg.svg";
 import DashboardFg from "../assets/icons/dashboard-fg.svg";
 import TracksIcon from "../assets/icons/tracks.svg";

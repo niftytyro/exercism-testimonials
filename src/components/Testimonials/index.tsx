@@ -9,11 +9,13 @@ const Testimonials: React.FC = () => {
       <TopBar />
       <div className="relative flex-1 border-y border-periwinkle20">
         {/* TODO Implement Spin Animation */}
-        <img
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-          src={LoadingIndicator}
-          alt="Loading"
-        />
+        <div className="bg-white110 opacity-90">
+          <img
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            src={LoadingIndicator}
+            alt="Loading"
+          />
+        </div>
       </div>
       <BottomBar />
     </section>
