@@ -4,6 +4,7 @@ import TopBar from "./TopBar";
 import LoadingIndicator from "../../assets/loading-indicator.svg";
 import ChevronRight from "../../assets/icons/chevron-right.svg";
 import { Testimonials, useTestimonials } from "../../utils/api";
+import { formatDate } from "../../utils/date";
 
 interface TestimonialsProps {
   testimonials: Testimonials;
@@ -58,7 +59,7 @@ const TestimonialsList: React.FC<TestimonialsProps> = ({ testimonials }) => {
               {each.content}
             </div>
             <div className="flex-1"></div>
-            <div className="mr-[60px]">{each.created_at}</div>
+            <div className="mr-[60px]">{formatDate(each.created_at)}</div>
             <img src={ChevronRight} alt="Right Arrow" />
           </div>
         );
@@ -74,9 +75,7 @@ const TestimonialsContainer: React.FC = () => {
     <section className="flex flex-col items-stretch w-full h-full shadow-lg rounded-lg">
       <TopBar />
       <div className="relative flex-1 border-y border-periwinkle20">
-        {isLoading ? (
-          <Loader />
-        ) : data !== undefined ? (
+        {data !== undefined ? (
           <div className="hover:cursor-pointer">
             <TestimonialsList testimonials={data.testimonials} />
           </div>
@@ -85,6 +84,7 @@ const TestimonialsContainer: React.FC = () => {
             Something went wrong :/
           </div>
         )}
+        {isLoading && <Loader />}
       </div>
       <BottomBar />
     </section>
