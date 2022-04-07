@@ -1,3 +1,4 @@
+import qs from "qs";
 import useSWR from "swr";
 import { BASE_API_URL } from "./constants";
 
@@ -43,6 +44,9 @@ export const fetcher = (endpoint: string) => {
   return fetch(url).then((res) => res.json());
 };
 
-export const useTestimonials = () => {
-  return useSWR<TestimonialsResponse>("/hiring/testimonials", fetcher);
+export const useTestimonials = ({ page }: { page?: number }) => {
+  return useSWR<TestimonialsResponse>(
+    `/hiring/testimonials?${qs.stringify({ page })}`,
+    fetcher
+  );
 };

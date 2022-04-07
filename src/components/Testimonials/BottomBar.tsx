@@ -1,12 +1,51 @@
-import React from "react";
+import React, { useMemo } from "react";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import ArrowRight from "../../assets/icons/arrow-right.svg";
 
-const BottomBar: React.FC = () => {
+export interface BottomBarProps {
+  currentPage: number;
+  totalPages?: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const BottomBar: React.FC<BottomBarProps> = ({
+  currentPage,
+  totalPages,
+  setCurrentPage,
+}) => {
+  const pagesArray = useMemo(() => {
+    if (totalPages && currentPage) {
+      const array: (number | null)[] = (
+        currentPage > 3
+          ? Array.from(Array(5).keys()).map(
+              (_, index) => currentPage + index - 2
+            )
+          : Array.from(Array(currentPage + 2).keys()).map(
+              (_, index) => index + 1
+            )
+      ).filter((page) => page === null || page <= totalPages);
+
+      if (array[0] && array[0] > 1) {
+        if (array[0] > 2) {
+          array.splice(0, 0, null);
+        }
+        array.splice(0, 0, 1);
+      }
+
+      if (currentPage < totalPages - 2) {
+        array.push(null);
+        array.push(totalPages);
+      }
+      return array;
+    }
+    return [];
+  }, [currentPage, totalPages]);
+
   return (
     <div className="flex justify-between items-center w-full px-8 py-4 text-sm font-medium">
       <button
-        disabled
+        disabled={currentPage === 1}
+        onClick={() => setCurrentPage(currentPage - 1)}
         className="disabled:bg-white80 disabled:text-periwinkle90 disabled:shadow-none shadow-sm py-2 px-4 rounded-[5px]"
       >
         <img
@@ -17,19 +56,35 @@ const BottomBar: React.FC = () => {
         Previous
       </button>
 
-      <div className="flex justify-center items-center space-x-3 text-periwinkle80">
-        <div className="px-4 py-2 rounded-[5px] border border-white60">1</div>
-        <div className="px-4 py-2 rounded-[5px] border border-periwinkle90 text-periwinkle100 bg-periwinkle">
-          2
+      {currentPage && totalPages ? (
+        <div className="flex justify-center items-center space-x-3 text-periwinkle80">
+          {pagesArray.map((index) =>
+            index === null ? (
+              <div key={index} className="px-3">
+                ...
+              </div>
+            ) : (
+              <button
+                key={index}
+                onClick={() => setCurrentPage(index)}
+                className={`px-4 py-2 rounded-[5px] border hover:cursor-pointer active:border-none active:outline-none ${
+                  currentPage === index
+                    ? "border-periwinkle90 text-periwinkle100 bg-periwinkle"
+                    : "border-white60"
+                }`}
+              >
+                {index}
+              </button>
+            )
+          )}
         </div>
-        <div className="px-4 py-2 rounded-[5px] border border-white60">3</div>
-        <div className="px-3">...</div>
-        <div className="px-4 py-2 rounded-[5px] border border-white60">32</div>
-        <div className="px-4 py-2 rounded-[5px] border border-white60">33</div>
-        <div className="px-4 py-2 rounded-[5px] border border-white60">34</div>
-      </div>
+      ) : null}
 
-      <button className="disabled:bg-white80 disabled:text-periwinkle90 shadow-sm py-2 px-4 rounded-[5px]">
+      <button
+        disabled={currentPage === totalPages}
+        onClick={() => setCurrentPage(currentPage + 1)}
+        className="disabled:bg-white80 disabled:text-periwinkle90 shadow-sm py-2 px-4 rounded-[5px]"
+      >
         Next
         <img
           className="inline w-3 h-[10px] ml-[10px]"
