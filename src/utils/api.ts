@@ -44,9 +44,15 @@ export const fetcher = (endpoint: string) => {
   return fetch(url).then((res) => res.json());
 };
 
-export const useTestimonials = ({ page }: { page?: number }) => {
+export const useTestimonials = ({
+  page,
+  exercise,
+}: {
+  page?: number;
+  exercise?: string;
+}) => {
   return useSWR<TestimonialsResponse>(
-    `/hiring/testimonials?${qs.stringify({ page })}`,
+    `/hiring/testimonials?${qs.stringify({ page, exercise })}`,
     fetcher
   );
 };

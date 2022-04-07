@@ -75,13 +75,19 @@ const TestimonialListItem: React.FC<TestimonialListItemProps> = ({
 const TestimonialsList: React.FC<TestimonialListProps> = ({ testimonials }) => {
   return (
     <div className="h-full w-full">
-      {testimonials?.results.map((each, idx) => (
-        <TestimonialListItem
-          key={each.id}
-          isLast={idx === testimonials.results.length - 1}
-          testimonial={each}
-        />
-      ))}
+      {testimonials?.results.length ? (
+        testimonials.results.map((each, idx) => (
+          <TestimonialListItem
+            key={each.id}
+            isLast={idx === testimonials.results.length - 1}
+            testimonial={each}
+          />
+        ))
+      ) : (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          Couldn't find any exercises. Try another query.
+        </div>
+      )}
     </div>
   );
 };
@@ -89,6 +95,7 @@ const TestimonialsList: React.FC<TestimonialListProps> = ({ testimonials }) => {
 const TestimonialsContainer: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [testimonials, setTestimonials] = useState<Testimonials>();
+  const [filterQuery, setFilterQuery] = useState<string>("");
 
   const {
     isValidating: isLoading,
@@ -96,6 +103,7 @@ const TestimonialsContainer: React.FC = () => {
     error,
   } = useTestimonials({
     page: currentPage,
+    exercise: filterQuery,
   });
 
   useEffect(() => {
@@ -106,7 +114,7 @@ const TestimonialsContainer: React.FC = () => {
 
   return (
     <section className="flex flex-col items-stretch w-full h-full shadow-lg rounded-lg">
-      <TopBar />
+      <TopBar filterQuery={filterQuery} setFilterQuery={setFilterQuery} />
       <div className="relative flex-1 border-y border-periwinkle20">
         {error && !isLoading ? (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
