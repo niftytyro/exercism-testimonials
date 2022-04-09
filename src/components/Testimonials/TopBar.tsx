@@ -72,12 +72,12 @@ const TrackSelector: React.FC<TracksSelectorProps> = ({
       <img src={ChevronDownIcon} alt="Chevron" />
       {open ? (
         <div className="absolute top-full -left-2 translate-y-4 w-[376px] max-h-96 p-2 rounded-lg bg-white shadow-lg z-10 overflow-y-scroll font-medium text-base">
-          <div
+          <button
             key="all"
             onClick={() => {
               setSelectedTrackSlug(undefined);
             }}
-            className="flex justify-between items-center py-2 px-6 rounded-sm hover:bg-white100"
+            className="flex justify-between items-center w-full py-2 px-6 rounded-sm hover:bg-white100"
           >
             <div className="flex justify-start items-center">
               <div className="flex justify-center items-center mr-6 appearance-none border border-periwinkle80 rounded-full w-5 h-5">
@@ -100,14 +100,15 @@ const TrackSelector: React.FC<TracksSelectorProps> = ({
                 0
               )}
             </div>
-          </div>
+          </button>
+
           {tracks?.map((track) => (
-            <div
+            <button
               key={track.slug}
               onClick={() => {
                 setSelectedTrackSlug(track.slug);
               }}
-              className="flex justify-between items-center py-2 px-6 rounded-sm hover:bg-white100"
+              className="flex justify-between items-center w-full py-2 px-6 rounded-sm hover:bg-white100"
             >
               <div className="flex justify-start items-center">
                 <div className="flex justify-center items-center mr-6 appearance-none border border-periwinkle80 rounded-full w-5 h-5">
@@ -126,7 +127,7 @@ const TrackSelector: React.FC<TracksSelectorProps> = ({
               <div className="border border-periwinkle10 px-3 py-1 rounded-full text-sm">
                 {track.testimonialCount}
               </div>
-            </div>
+            </button>
           ))}
         </div>
       ) : null}
@@ -210,18 +211,18 @@ const SortBy: React.FC<SortByProps> = ({
       <img className="w-6 h-3" src={ChevronDownIcon} alt="Search Icon" />
       {open ? (
         <div className="absolute top-full w-full left-0 bg-white rounded-lg font-medium p-2 text-base shadow-lg shadow-white60 z-10">
-          <div
+          <button
             onClick={() => setSortBy("newest_first")}
-            className="px-6 py-2 hover:bg-white100 rounded-sm"
+            className="w-full text-left px-6 py-2 hover:bg-white100 rounded-sm"
           >
             Sort by Most Recent
-          </div>
-          <div
+          </button>
+          <button
             onClick={() => setSortBy("oldest_first")}
-            className="px-6 py-2 hover:bg-white100 rounded-sm"
+            className="w-full text-left px-6 py-2 hover:bg-white100 rounded-sm"
           >
             Sort by Oldest First
-          </div>
+          </button>
         </div>
       ) : null}
     </div>

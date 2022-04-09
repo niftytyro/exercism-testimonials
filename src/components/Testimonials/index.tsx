@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import BottomBar from "./BottomBar";
-import TopBar, { TopBarProps } from "./TopBar";
-import LoadingIndicator from "../../assets/loading-indicator.svg";
 import ChevronRight from "../../assets/icons/chevron-right.svg";
+import LoadingIndicator from "../../assets/loading-indicator.svg";
 import {
   TestimonialResult,
   Testimonials,
@@ -10,6 +8,8 @@ import {
   useTracks,
 } from "../../utils/api";
 import { formatDate } from "../../utils/date";
+import BottomBar, { BottomBarProps } from "./BottomBar";
+import TopBar, { TopBarProps } from "./TopBar";
 
 interface TestimonialListProps {
   testimonials?: Testimonials;
@@ -20,12 +20,12 @@ interface TestimonialListItemProps {
   isLast: boolean;
 }
 
-interface TestimonialsContainerProps extends Omit<TopBarProps, "tracks"> {
+interface TestimonialsContainerProps
+  extends Omit<TopBarProps, "tracks">,
+    BottomBarProps {
   areTestimonialsLoading: boolean;
   testimonialsData?: TestimonialsResponse;
   testimonialsError: any;
-  currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 // TODO Implement Spin Animation
@@ -46,7 +46,8 @@ const TestimonialListItem: React.FC<TestimonialListItemProps> = ({
   isLast,
 }) => {
   return (
-    <div
+    <a
+      href={`/testimonials/${testimonial.id}`}
       className={`flex items-center pl-6 pr-7 py-3 text-sm hover:bg-periwinkle5 ${
         isLast ? "" : "border-b border-white90"
       }`}
@@ -77,7 +78,7 @@ const TestimonialListItem: React.FC<TestimonialListItemProps> = ({
       <div className="flex-1"></div>
       <div className="mr-[60px]">{formatDate(testimonial.created_at)}</div>
       <img src={ChevronRight} alt="Right Arrow" />
-    </div>
+    </a>
   );
 };
 
@@ -107,7 +108,8 @@ const TestimonialsContainer: React.FC<TestimonialsContainerProps> = ({
   testimonialsError,
   currentPage,
   selectedTrackSlug,
-  order: sortBy,
+  totalPages,
+  order,
   setSelectedTrackSlug,
   setCurrentPage,
   setFilterQuery,
@@ -135,7 +137,7 @@ const TestimonialsContainer: React.FC<TestimonialsContainerProps> = ({
         })}
         selectedTrackSlug={selectedTrackSlug}
         setSelectedTrackSlug={setSelectedTrackSlug}
-        order={sortBy}
+        order={order}
         setOrder={setSortBy}
       />
       <div className="relative flex-1 border-y border-periwinkle20">
@@ -151,7 +153,7 @@ const TestimonialsContainer: React.FC<TestimonialsContainerProps> = ({
         {areTestimonialsLoading && <Loader />}
       </div>
       <BottomBar
-        totalPages={testimonialsData?.testimonials.pagination.total_pages}
+        totalPages={totalPages}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />

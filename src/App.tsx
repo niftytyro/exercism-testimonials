@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import TestimonialsBorderIcon from "./assets/icons/testimonials-border.svg";
 import TestimonialsInnerIcon from "./assets/icons/testimonials-inner.svg";
@@ -6,10 +6,9 @@ import Squiggle from "./assets/icons/squiggle.svg";
 import Testimonials from "./components/Testimonials";
 import { useTestimonials } from "./utils/api";
 
-// TODO Semantic Tags
-
 function App() {
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>();
   const [filterQuery, setFilterQuery] = useState<string>("");
   const [selectedTrackSlug, setSelectedTrackSlug] = useState<string>();
   const [order, setOrder] = useState<"newest_first" | "oldest_first">(
@@ -26,6 +25,12 @@ function App() {
     track: selectedTrackSlug,
     order,
   });
+
+  useEffect(() => {
+    if (testimonialsData?.testimonials.pagination.total_pages !== undefined) {
+      setTotalPages(testimonialsData.testimonials.pagination.total_pages);
+    }
+  }, [testimonialsData?.testimonials.pagination.total_pages]);
 
   return (
     <div className="flex flex-col items-center bg-white h-full w-full">
@@ -67,6 +72,7 @@ function App() {
           setOrder={setOrder}
           testimonialsData={testimonialsData}
           testimonialsError={testimonialsError}
+          totalPages={totalPages}
         />
       </div>
     </div>

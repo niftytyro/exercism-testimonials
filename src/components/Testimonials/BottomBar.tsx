@@ -25,7 +25,6 @@ const BottomBar: React.FC<BottomBarProps> = ({
               (_, index) => index + 1
             )
       ).filter((page) => page === null || page <= totalPages);
-
       if (array[0] && array[0] > 1) {
         if (array[0] > 2) {
           array.splice(0, 0, null);
@@ -53,7 +52,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
         Previous
       </button>
 
-      {currentPage ? (
+      {currentPage && totalPages ? (
         <div className="flex justify-center items-center space-x-3 text-periwinkle80">
           {pagesArray.map((index) =>
             index === null ? (
