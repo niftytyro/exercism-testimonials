@@ -28,12 +28,11 @@ interface TestimonialsContainerProps
   testimonialsError: any;
 }
 
-// TODO Implement Spin Animation
 const Loader: React.FC = () => {
   return (
     <div className="absolute top-0 left-0 w-full h-full bg-white110 opacity-90">
       <img
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        className={`absolute top-1/2 left-1/2 animate-spin`}
         src={LoadingIndicator}
         alt="Loading"
       />
@@ -151,6 +150,7 @@ const TestimonialsContainer: React.FC<TestimonialsContainerProps> = ({
           </div>
         )}
         {areTestimonialsLoading && <Loader />}
+        <Loader />
       </div>
       <BottomBar
         totalPages={totalPages}

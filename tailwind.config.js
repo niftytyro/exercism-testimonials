@@ -33,6 +33,19 @@ module.exports = {
         lg: "0px 4px 42px 0px rgba(79, 114, 205, 0.15)",
         glow: "0px 0px 2px 2px rgba(46, 87, 232, 0.25)",
       },
+      keyframes: {
+        spin: {
+          "0%": {
+            transform: "translateX(-50%) translateY(-50%) rotate(0deg)",
+          },
+          "50%": {
+            transform: "translateX(-50%) translateY(-50%) rotate(180deg)",
+          },
+          "100%": {
+            transform: "translateX(-50%) translateY(-50%) rotate(360deg)",
+          },
+        },
+      },
     },
   },
   plugins: [],
