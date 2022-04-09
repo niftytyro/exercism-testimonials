@@ -1,21 +1,131 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import AllTracksIcon from "../../assets/icons/all-tracks.svg";
 import ChevronDownIcon from "../../assets/icons/chevron-down.svg";
 import SearchIcon from "../../assets/icons/search.svg";
+import { Track } from "../../utils/api";
 
 interface FilterSearchProps {
   setFilterQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
-interface TopBarProps extends FilterSearchProps {
-  filterQuery: string;
+interface TrackWithTestimonialCount extends Track {
+  testimonialCount?: number;
 }
 
-const TrackSelector: React.FC = () => {
+interface TracksSelectorProps {
+  tracks?: TrackWithTestimonialCount[];
+  selectedTrackSlug?: string;
+  setSelectedTrackSlug: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
+}
+
+interface TopBarProps extends FilterSearchProps, TracksSelectorProps {}
+
+const TrackSelector: React.FC<TracksSelectorProps> = ({
+  tracks,
+  selectedTrackSlug,
+  setSelectedTrackSlug,
+}) => {
+  const [open, setOpen] = useState(false);
+
+  const selectedTrack = useMemo(
+    () => tracks?.find((each) => each.slug === selectedTrackSlug),
+    [selectedTrackSlug, tracks]
+  );
+
+  const toggleSelector = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.stopPropagation();
+      setOpen(!open);
+    },
+    [open]
+  );
+
+  const onClickOutside = useCallback(() => {
+    if (open) {
+      setOpen(false);
+    }
+  }, [open]);
+
+  useEffect(() => {
+    document.addEventListener("click", onClickOutside);
+    return () => document.removeEventListener("click", onClickOutside);
+  }, [onClickOutside]);
+
+  // console.log(tracks);
+
   return (
-    <div className="flex items-center">
-      <img className="mr-3" src={AllTracksIcon} alt="All Tracks Icon" />
+    <div
+      onClick={toggleSelector}
+      className="flex items-center relative hover:cursor-pointer"
+    >
+      <img
+        className="mr-3 w-[38px]"
+        src={selectedTrack ? selectedTrack.icon_url : AllTracksIcon}
+        alt={selectedTrack ? selectedTrack.title : "All Tracks"}
+      />
       <img src={ChevronDownIcon} alt="Chevron" />
+      {open ? (
+        <div className="absolute top-full -left-2 translate-y-4 w-[376px] max-h-96 p-2 rounded-lg bg-white shadow-lg z-10 overflow-y-scroll font-medium text-base">
+          <div
+            key="all"
+            onClick={() => {
+              setSelectedTrackSlug(undefined);
+            }}
+            className="flex justify-between items-center py-2 px-6 hover:bg-white100"
+          >
+            <div className="flex justify-start items-center">
+              <div className="flex justify-center items-center mr-6 appearance-none border border-periwinkle80 rounded-full w-5 h-5">
+                {selectedTrackSlug === undefined && (
+                  <div className="w-[9px] h-[9px] rounded-full bg-periwinkle60"></div>
+                )}
+              </div>
+              <img
+                className="w-[38px] mr-[18px]"
+                src={AllTracksIcon}
+                alt="All Tracks"
+              />
+              All
+            </div>
+
+            <div className="border border-periwinkle10 px-3 py-1 rounded-full text-sm">
+              {tracks?.reduce(
+                (testimonialCount, currentTrack) =>
+                  testimonialCount + (currentTrack.testimonialCount ?? 0),
+                0
+              )}
+            </div>
+          </div>
+          {tracks?.map((track) => (
+            <div
+              key={track.slug}
+              onClick={() => {
+                setSelectedTrackSlug(track.slug);
+              }}
+              className="flex justify-between items-center py-2 px-6 hover:bg-white100"
+            >
+              <div className="flex justify-start items-center">
+                <div className="flex justify-center items-center mr-6 appearance-none border border-periwinkle80 rounded-full w-5 h-5">
+                  {selectedTrackSlug === track.slug && (
+                    <div className="w-[9px] h-[9px] rounded-full bg-periwinkle60"></div>
+                  )}
+                </div>
+                <img
+                  className="w-[38px] mr-[18px]"
+                  src={track.icon_url}
+                  alt={track.title}
+                />
+                {track.title}
+              </div>
+
+              <div className="border border-periwinkle10 px-3 py-1 rounded-full text-sm">
+                {track.testimonialCount}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -71,11 +181,20 @@ const Sort: React.FC = () => {
   );
 };
 
-const TopBar: React.FC<TopBarProps> = ({ filterQuery, setFilterQuery }) => {
+const TopBar: React.FC<TopBarProps> = ({
+  tracks,
+  selectedTrackSlug,
+  setFilterQuery,
+  setSelectedTrackSlug,
+}) => {
   return (
     <div className="flex justify-between items-center w-full px-6 py-4 text-base font-normal">
       <div className="flex justify-center items-center space-x-6">
-        <TrackSelector />
+        <TrackSelector
+          tracks={tracks}
+          selectedTrackSlug={selectedTrackSlug}
+          setSelectedTrackSlug={setSelectedTrackSlug}
+        />
         <FilterSearch setFilterQuery={setFilterQuery} />
       </div>
       <div>

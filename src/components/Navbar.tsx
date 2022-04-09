@@ -51,11 +51,11 @@ const Navbar: React.FC = () => {
       <div className="flex items-center space-x-9">
         <div className="relative">
           <img src={HappyIcon} alt="Testimonials Icon" />
-          <div className="absolute top-0 right-0 translate-x-1 -translate-y-1 w-[14px] h-[14px] bg-fire-opal rounded-full border-white border-[3px]"></div>
+          <div className="absolute top-0 right-0 translate-x-1 -translate-y-1 w-3.5 h-3.5 bg-fire-opal rounded-full border-white border-[3px]"></div>
         </div>
         <div className="relative">
           <img src={JourneysIcon} alt="Journeys Icon" />
-          <div className="absolute top-0 right-0 translate-x-1 -translate-y-1 w-[14px] h-[14px] bg-fire-opal rounded-full border-white border-[3px]"></div>
+          <div className="absolute top-0 right-0 translate-x-1 -translate-y-1 w-3.5 h-3.5 bg-fire-opal rounded-full border-white border-[3px]"></div>
         </div>
       </div>
       <div className="relative bg-old-lace px-3 py-2 rounded-lg ml-10 shadow-md">

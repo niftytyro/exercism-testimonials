@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import ArrowLeft from "../../assets/icons/arrow-left.svg";
 import ArrowRight from "../../assets/icons/arrow-right.svg";
+import { generateKey } from "../../utils/key";
 
 export interface BottomBarProps {
   currentPage: number;
@@ -48,19 +49,15 @@ const BottomBar: React.FC<BottomBarProps> = ({
         onClick={() => setCurrentPage(currentPage - 1)}
         className="disabled:bg-white80 disabled:text-periwinkle90 disabled:shadow-none shadow-sm py-2 px-4 rounded-[5px]"
       >
-        <img
-          className="inline w-3 h-[10px] mr-[10px]"
-          src={ArrowLeft}
-          alt="Arrow"
-        />
+        <img className="inline w-3 h-2.5 mr-2.5" src={ArrowLeft} alt="Arrow" />
         Previous
       </button>
 
-      {currentPage && totalPages ? (
+      {currentPage ? (
         <div className="flex justify-center items-center space-x-3 text-periwinkle80">
           {pagesArray.map((index) =>
             index === null ? (
-              <div key={index} className="px-3">
+              <div key={generateKey()} className="px-3">
                 ...
               </div>
             ) : (
@@ -86,11 +83,7 @@ const BottomBar: React.FC<BottomBarProps> = ({
         className="disabled:bg-white80 disabled:text-periwinkle90 shadow-sm py-2 px-4 rounded-[5px]"
       >
         Next
-        <img
-          className="inline w-3 h-[10px] ml-[10px]"
-          src={ArrowRight}
-          alt="Arrow"
-        />
+        <img className="inline w-3 h-2.5 ml-2.5" src={ArrowRight} alt="Arrow" />
       </button>
     </div>
   );

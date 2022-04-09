@@ -6,7 +6,8 @@ import ChevronRight from "../../assets/icons/chevron-right.svg";
 import {
   TestimonialResult,
   Testimonials,
-  useTestimonials,
+  TestimonialsResponse,
+  useTracks,
 } from "../../utils/api";
 import { formatDate } from "../../utils/date";
 
@@ -17,6 +18,20 @@ interface TestimonialListProps {
 interface TestimonialListItemProps {
   testimonial: TestimonialResult;
   isLast: boolean;
+}
+
+interface TestimonialsContainerProps {
+  areTestimonialsLoading: boolean;
+  testimonialsData?: TestimonialsResponse;
+  testimonialsError: any;
+  currentPage: number;
+  filterQuery: string;
+  selectedTrackSlug?: string;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  setFilterQuery: React.Dispatch<React.SetStateAction<string>>;
+  setSelectedTrackSlug: React.Dispatch<
+    React.SetStateAction<string | undefined>
+  >;
 }
 
 // TODO Implement Spin Animation
@@ -92,31 +107,41 @@ const TestimonialsList: React.FC<TestimonialListProps> = ({ testimonials }) => {
   );
 };
 
-const TestimonialsContainer: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<number>(1);
+const TestimonialsContainer: React.FC<TestimonialsContainerProps> = ({
+  areTestimonialsLoading,
+  testimonialsData,
+  testimonialsError,
+  currentPage,
+  selectedTrackSlug,
+  setSelectedTrackSlug,
+  setCurrentPage,
+  setFilterQuery,
+}) => {
   const [testimonials, setTestimonials] = useState<Testimonials>();
-  const [filterQuery, setFilterQuery] = useState<string>("");
 
-  const {
-    isValidating: isLoading,
-    data,
-    error,
-  } = useTestimonials({
-    page: currentPage,
-    exercise: filterQuery,
-  });
+  const { data: tracksData } = useTracks();
 
   useEffect(() => {
-    if (data?.testimonials) {
-      setTestimonials(data.testimonials);
+    if (testimonialsData?.testimonials) {
+      setTestimonials(testimonialsData.testimonials);
     }
-  }, [data?.testimonials]);
+  }, [testimonialsData?.testimonials]);
 
   return (
     <section className="flex flex-col items-stretch w-full h-full shadow-lg rounded-lg">
-      <TopBar filterQuery={filterQuery} setFilterQuery={setFilterQuery} />
+      <TopBar
+        setFilterQuery={setFilterQuery}
+        tracks={(tracksData?.tracks ?? []).map((track) => {
+          return {
+            ...track,
+            testimonialCount: testimonials?.track_counts[track.slug] ?? 0,
+          };
+        })}
+        selectedTrackSlug={selectedTrackSlug}
+        setSelectedTrackSlug={setSelectedTrackSlug}
+      />
       <div className="relative flex-1 border-y border-periwinkle20">
-        {error && !isLoading ? (
+        {testimonialsError && !areTestimonialsLoading ? (
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             Something went wrong :/
           </div>
@@ -125,10 +150,10 @@ const TestimonialsContainer: React.FC = () => {
             <TestimonialsList testimonials={testimonials} />
           </div>
         )}
-        {isLoading && <Loader />}
+        {areTestimonialsLoading && <Loader />}
       </div>
       <BottomBar
-        totalPages={data?.testimonials.pagination.total_pages}
+        totalPages={testimonialsData?.testimonials.pagination.total_pages}
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
       />
