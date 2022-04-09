@@ -69,13 +69,15 @@ export const useTestimonials = ({
   page,
   exercise,
   track,
+  order,
 }: {
   page?: number;
   exercise?: string;
   track?: string;
+  order?: "newest_first" | "oldest_first";
 }) => {
   return useSWR<TestimonialsResponse>(
-    `/hiring/testimonials?${qs.stringify({ page, exercise, track })}`,
+    `/hiring/testimonials?${qs.stringify({ page, exercise, track, order })}`,
     fetcher
   );
 };

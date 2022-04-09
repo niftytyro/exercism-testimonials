@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import BottomBar from "./BottomBar";
-import TopBar from "./TopBar";
+import TopBar, { TopBarProps } from "./TopBar";
 import LoadingIndicator from "../../assets/loading-indicator.svg";
 import ChevronRight from "../../assets/icons/chevron-right.svg";
 import {
@@ -20,18 +20,12 @@ interface TestimonialListItemProps {
   isLast: boolean;
 }
 
-interface TestimonialsContainerProps {
+interface TestimonialsContainerProps extends Omit<TopBarProps, "tracks"> {
   areTestimonialsLoading: boolean;
   testimonialsData?: TestimonialsResponse;
   testimonialsError: any;
   currentPage: number;
-  filterQuery: string;
-  selectedTrackSlug?: string;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
-  setFilterQuery: React.Dispatch<React.SetStateAction<string>>;
-  setSelectedTrackSlug: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
 }
 
 // TODO Implement Spin Animation
@@ -113,9 +107,11 @@ const TestimonialsContainer: React.FC<TestimonialsContainerProps> = ({
   testimonialsError,
   currentPage,
   selectedTrackSlug,
+  order: sortBy,
   setSelectedTrackSlug,
   setCurrentPage,
   setFilterQuery,
+  setOrder: setSortBy,
 }) => {
   const [testimonials, setTestimonials] = useState<Testimonials>();
 
@@ -139,6 +135,8 @@ const TestimonialsContainer: React.FC<TestimonialsContainerProps> = ({
         })}
         selectedTrackSlug={selectedTrackSlug}
         setSelectedTrackSlug={setSelectedTrackSlug}
+        order={sortBy}
+        setOrder={setSortBy}
       />
       <div className="relative flex-1 border-y border-periwinkle20">
         {testimonialsError && !areTestimonialsLoading ? (

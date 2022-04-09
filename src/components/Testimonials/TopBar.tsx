@@ -5,7 +5,7 @@ import SearchIcon from "../../assets/icons/search.svg";
 import { Track } from "../../utils/api";
 
 interface FilterSearchProps {
-  setFilterQuery: React.Dispatch<React.SetStateAction<string>>;
+  setFilterQuery: (slug: string) => void;
 }
 
 interface TrackWithTestimonialCount extends Track {
@@ -15,12 +15,18 @@ interface TrackWithTestimonialCount extends Track {
 interface TracksSelectorProps {
   tracks?: TrackWithTestimonialCount[];
   selectedTrackSlug?: string;
-  setSelectedTrackSlug: React.Dispatch<
-    React.SetStateAction<string | undefined>
-  >;
+  setSelectedTrackSlug: (slug?: string) => void;
 }
 
-interface TopBarProps extends FilterSearchProps, TracksSelectorProps {}
+interface SortByProps {
+  order: "newest_first" | "oldest_first";
+  setOrder: (order: "newest_first" | "oldest_first") => void;
+}
+
+export interface TopBarProps
+  extends FilterSearchProps,
+    TracksSelectorProps,
+    SortByProps {}
 
 const TrackSelector: React.FC<TracksSelectorProps> = ({
   tracks,
@@ -53,8 +59,6 @@ const TrackSelector: React.FC<TracksSelectorProps> = ({
     return () => document.removeEventListener("click", onClickOutside);
   }, [onClickOutside]);
 
-  // console.log(tracks);
-
   return (
     <div
       onClick={toggleSelector}
@@ -73,7 +77,7 @@ const TrackSelector: React.FC<TracksSelectorProps> = ({
             onClick={() => {
               setSelectedTrackSlug(undefined);
             }}
-            className="flex justify-between items-center py-2 px-6 hover:bg-white100"
+            className="flex justify-between items-center py-2 px-6 rounded-sm hover:bg-white100"
           >
             <div className="flex justify-start items-center">
               <div className="flex justify-center items-center mr-6 appearance-none border border-periwinkle80 rounded-full w-5 h-5">
@@ -103,7 +107,7 @@ const TrackSelector: React.FC<TracksSelectorProps> = ({
               onClick={() => {
                 setSelectedTrackSlug(track.slug);
               }}
-              className="flex justify-between items-center py-2 px-6 hover:bg-white100"
+              className="flex justify-between items-center py-2 px-6 rounded-sm hover:bg-white100"
             >
               <div className="flex justify-start items-center">
                 <div className="flex justify-center items-center mr-6 appearance-none border border-periwinkle80 rounded-full w-5 h-5">
@@ -170,13 +174,56 @@ const FilterSearch: React.FC<FilterSearchProps> = ({ setFilterQuery }) => {
   );
 };
 
-const Sort: React.FC = () => {
+const SortBy: React.FC<SortByProps> = ({
+  setOrder: setSortBy,
+  order: sortBy,
+}) => {
+  const [open, setOpen] = useState(false);
+
+  const toggle = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      e.stopPropagation();
+      setOpen(!open);
+    },
+    [open]
+  );
+
+  const onClickOutside = useCallback(() => {
+    if (open) {
+      setOpen(false);
+    }
+  }, [open]);
+
+  useEffect(() => {
+    document.addEventListener("click", onClickOutside);
+    return () => document.removeEventListener("click", onClickOutside);
+  }, [onClickOutside]);
+
   return (
-    <div className="flex items-center w-[25vw] py-3 px-5 bg-white100 rounded-[5px]">
-      <p className="flex-1 bg-white100 ml-4 text-periwinkle80">
-        Sort by Most Recent
+    <div
+      onClick={toggle}
+      className="relative flex items-center w-[25vw] py-3 px-5 bg-white100 rounded-[5px] cursor-pointer"
+    >
+      <p className="flex-1 bg-white100 text-periwinkle80">
+        Sort by {sortBy === "newest_first" ? "Most Recent" : "Oldest First"}
       </p>
       <img className="w-6 h-3" src={ChevronDownIcon} alt="Search Icon" />
+      {open ? (
+        <div className="absolute top-full w-full left-0 bg-white rounded-lg font-medium p-2 text-base shadow-lg shadow-white60 z-10">
+          <div
+            onClick={() => setSortBy("newest_first")}
+            className="px-6 py-2 hover:bg-white100 rounded-sm"
+          >
+            Sort by Most Recent
+          </div>
+          <div
+            onClick={() => setSortBy("oldest_first")}
+            className="px-6 py-2 hover:bg-white100 rounded-sm"
+          >
+            Sort by Oldest First
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 };
@@ -184,8 +231,10 @@ const Sort: React.FC = () => {
 const TopBar: React.FC<TopBarProps> = ({
   tracks,
   selectedTrackSlug,
+  order: sortBy,
   setFilterQuery,
   setSelectedTrackSlug,
+  setOrder: setSortBy,
 }) => {
   return (
     <div className="flex justify-between items-center w-full px-6 py-4 text-base font-normal">
@@ -198,7 +247,7 @@ const TopBar: React.FC<TopBarProps> = ({
         <FilterSearch setFilterQuery={setFilterQuery} />
       </div>
       <div>
-        <Sort />
+        <SortBy order={sortBy} setOrder={setSortBy} />
       </div>
     </div>
   );

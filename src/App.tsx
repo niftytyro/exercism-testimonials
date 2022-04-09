@@ -6,10 +6,15 @@ import Squiggle from "./assets/icons/squiggle.svg";
 import Testimonials from "./components/Testimonials";
 import { useTestimonials } from "./utils/api";
 
+// TODO Semantic Tags
+
 function App() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [filterQuery, setFilterQuery] = useState<string>("");
   const [selectedTrackSlug, setSelectedTrackSlug] = useState<string>();
+  const [order, setOrder] = useState<"newest_first" | "oldest_first">(
+    "newest_first"
+  );
 
   const {
     isValidating: areTestimonialsLoading,
@@ -17,8 +22,9 @@ function App() {
     error: testimonialsError,
   } = useTestimonials({
     page: currentPage,
-    exercise: filterQuery,
+    exercise: filterQuery ? filterQuery : undefined,
     track: selectedTrackSlug,
+    order,
   });
 
   return (
@@ -45,11 +51,20 @@ function App() {
         <Testimonials
           areTestimonialsLoading={areTestimonialsLoading}
           currentPage={currentPage}
-          filterQuery={filterQuery}
           selectedTrackSlug={selectedTrackSlug}
           setCurrentPage={setCurrentPage}
-          setSelectedTrackSlug={setSelectedTrackSlug}
-          setFilterQuery={setFilterQuery}
+          setSelectedTrackSlug={(slug?: string) => {
+            setCurrentPage(1);
+            setSelectedTrackSlug(slug);
+          }}
+          setFilterQuery={(filter: string) => {
+            if (filter !== filterQuery) {
+              setCurrentPage(1);
+              setFilterQuery(filter);
+            }
+          }}
+          order={order}
+          setOrder={setOrder}
           testimonialsData={testimonialsData}
           testimonialsError={testimonialsError}
         />
