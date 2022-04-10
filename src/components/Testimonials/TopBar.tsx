@@ -61,6 +61,7 @@ const TrackSelector: React.FC<TracksSelectorProps> = ({
 
   return (
     <div
+      data-testid="track-selector"
       onClick={toggleSelector}
       className="flex items-center relative hover:cursor-pointer"
     >
@@ -237,6 +238,8 @@ const TopBar: React.FC<TopBarProps> = ({
   setSelectedTrackSlug,
   setOrder: setSortBy,
 }) => {
+  console.log(tracks);
+
   return (
     <div className="flex justify-between items-center w-full px-6 py-4 text-base font-normal">
       <div className="flex justify-center items-center space-x-6">
