@@ -150,7 +150,6 @@ const TestimonialsContainer: React.FC<TestimonialsContainerProps> = ({
           </div>
         )}
         {areTestimonialsLoading && <Loader />}
-        <Loader />
       </div>
       <BottomBar
         totalPages={totalPages}
